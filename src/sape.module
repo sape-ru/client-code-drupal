@@ -1,0 +1,86 @@
+<?php
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\sape\vendor\sape;
+
+function sape_node_view_alter(array &$build, $entity, $display) {
+
+
+
+    function serializer_function_content($d)
+    {
+        $default_config = \Drupal::config('sape.settings');
+        if ($default_config->get('sape.USER_ID') && ($default_config->get('sape.context'))) {
+            if (!defined('_SAPE_USER')) {
+                define('_SAPE_USER', $default_config->get('sape.USER_ID'));
+            }
+            $sape = \Drupal\sape\vendor\sape\SAPE_context::getInstance(array(
+                    'charset' => 'UTF-8',
+                    'multi_site' => true,
+                    'show_counter_separately' => true,
+                    'force_show_code' => $default_config->get('sape.debug')
+                )
+            );
+
+            return $sape->replace_in_text_segment($d);
+        }
+        return $d;
+    }
+
+    //$build['body'][0]['#post_render']=array('serializer_function');
+
+    $build['#post_render'][]='serializer_function_content';
+    $build['#cache'] = array('max-age'=>0);
+
+    //$module_handler = \Drupal::moduleHandler();
+    //$module_handler->invokeAll('hooks_sape_context_placed', array($entity->id(), $entity));
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function sape_page_attachments(array &$page) {
+
+    $path_args = explode('/', \Drupal::request()->getRequestUri());
+    if($path_args[1] !== 'admin' && $path_args[0] !== 'admin') {
+
+        function serializer_function()
+        {
+
+            if(defined('_SAPE_COUNTER')){
+                return _SAPE_COUNTER;
+            }
+
+            $default_config = \Drupal::config('sape.settings');
+            if ($default_config->get('sape.USER_ID') && ($default_config->get('sape.tizers') || $default_config->get('sape.rtb'))) {
+                if (!defined('_SAPE_USER')) {
+                    define('_SAPE_USER', $default_config->get('sape.USER_ID'));
+                }
+
+                $sape = \Drupal\sape\vendor\sape\SAPE_client::getInstance(array(
+                        'charset' => 'UTF-8',
+                        'multi_site' => true,
+                        'show_counter_separately' => true,
+                        'force_show_code' => $default_config->get('sape.debug')
+                    )
+                );
+
+                $data = $sape->return_counter();
+                define('_SAPE_COUNTER', $data);
+                return $data;
+            }
+            return '';
+        }
+
+        $xuacompatible = array(
+            '#type' => 'HtmlTag',
+            '#tag' => 'div',
+            '#markup' => 'data',
+            '#post_render' => array('serializer_function'),
+            '#cache' => array('max-age'=> 0)
+
+        );
+
+        $page['#attached']['html_head'][] = [$xuacompatible, 'sape_counter'];
+    }
+}

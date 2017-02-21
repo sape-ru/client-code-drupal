@@ -1,0 +1,7 @@
+sape.admin:
+  path: '/admin/config/development/sape'
+  defaults:
+    _form: 'Drupal\sape\Form\SapeForm'
+    _title: 'Sape settings'
+  requirements:
+    _permission: 'administer site configuration'

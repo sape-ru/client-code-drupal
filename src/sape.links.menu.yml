@@ -1,0 +1,6 @@
+sape.admin:
+  title: 'Sape settings'
+  description: ''
+  parent: system.admin_config_development
+  route_name: sape.admin
+  weight: 100
