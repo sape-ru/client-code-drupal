@@ -2,7 +2,7 @@
 
 ## RU
 
-Плагин Drupal для sape.ru **[v0.01](https://github.com/sape-ru/client-code-drupal/blob/v0.01/plugin/saperu-integration-v0.01.zip?raw=true)**
+Плагин Drupal для sape.ru **[v0.01](https://github.com/sape-ru/client-code-drupal/blob/v0.01/plugin/saperu-integration-8x-0.01.zip?raw=true)**
 
 - встроенная версия клиентского кода Sape: 1.3.8
 
@@ -18,7 +18,7 @@ Drupal  8+ [системные требования](https://www.drupal.org/docs
 
 ## EN
 
-Drupal plugin for sape.ru webmaster services integration **[v0.01](https://github.com/sape-ru/client-code-drupal/blob/v0.01/plugin/saperu-integration-v0.01.zip?raw=true)**
+Drupal plugin for sape.ru webmaster services integration **[v0.01](https://github.com/sape-ru/client-code-drupal/blob/v0.01/plugin/saperu-integration-8x-0.01.zip?raw=true)**
 - built in version of sape.ru's client code: 1.3.8
 
 ### System requirements
