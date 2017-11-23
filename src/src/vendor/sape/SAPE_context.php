@@ -212,7 +212,7 @@ class SAPE_context extends SAPE_base
                                 $this->_debug_action_append($tag_name, 'added to open_tags, stop replacement');
                             }
                         }
-                    } else {
+                    } elseif (count($open_tags) == 0) {
                         //Если нет названия тега, то считаем, что перед нами текст
                         foreach ($source_sentences as $n => $sentence) {
                             if (preg_match('/' . $sentence . '/', $part) == 1) {

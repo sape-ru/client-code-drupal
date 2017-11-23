@@ -20,7 +20,7 @@
  */
 class SAPE_base
 {
-    protected $_version = '1.3.8';
+    protected $_version = '1.3.9';
 
     protected $_verbose = false;
 

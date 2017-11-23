@@ -1,7 +1,7 @@
 #Sape.ru integration
 
-Drupal plugin for sape.ru webmaster services integration v0.01
-- built in version of sape.ru's client code: 1.3.8
+Drupal plugin for sape.ru webmaster services integration v0.02
+- built in version of sape.ru's client code: 1.3.9
 
 ### System requirements
 Drupal 8+ [system requirements](https://www.drupal.org/docs/8/system-requirements) 

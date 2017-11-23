@@ -2,5 +2,5 @@ name: Sape Module
 description: Sape.ru Integration.
 package: Custom
 type: module
-version: 0.01
+version: 0.02
 core: 8.x
