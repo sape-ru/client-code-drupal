@@ -23,8 +23,6 @@ namespace  Drupal\sape\vendor\sape;
  */
 class SAPE_globals
 {
-
-
     protected function _get_toggle_flag($name, $toggle = false)
     {
 

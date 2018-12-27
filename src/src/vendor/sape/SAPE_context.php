@@ -345,9 +345,18 @@ class SAPE_context extends SAPE_base
     protected function _get_db_file()
     {
         if ($this->_multi_site) {
-            return dirname(__FILE__) . '/' . $this->_host . '.words.db';
+            return dirname(__FILE__) . '/' . $this->_host . '.words' . $this->_get_save_filename_prefix() . '.db';
         } else {
-            return dirname(__FILE__) . '/words.db';
+            return dirname(__FILE__) . '/words' . $this->_get_save_filename_prefix() . '.db';
+        }
+    }
+
+    protected function _get_meta_file()
+    {
+        if ($this->_multi_site) {
+            return dirname(__FILE__) . '/' . $this->_host . '.words.meta.db';
+        } else {
+            return dirname(__FILE__) . '/words.meta.db';
         }
     }
 
@@ -366,6 +375,52 @@ class SAPE_context extends SAPE_base
         //Есть ли обязательный вывод
         if (isset($this->_words['__sape_page_obligatory_output__'])) {
             $this->_page_obligatory_output = $this->_words['__sape_page_obligatory_output__'];
+        }
+    }
+
+    protected function _uncode_data($data)
+    {
+        if ($this->_format == 'php-require') {
+            $data1 = str_replace('<?php return ', '', $data);
+            eval('$data = ' . $data1 . ';');
+            return $data;
+        }
+
+        return @unserialize($data);
+    }
+
+    protected function _code_data($data)
+    {
+        if ($this->_format == 'php-require') {
+            return var_export($data, true);
+        }
+
+        return @serialize($data);
+    }
+
+    protected function _save_data($data, $filename = '')
+    {
+        if ($this->_split_data_file) {
+            if ($this->_multi_site) {
+                $directory = dirname(__FILE__) . '/' . $this->_host . '/';
+            } else {
+                $directory = dirname(__FILE__) . '/';
+            }
+            $hashArray = array();
+            $data = $this->_uncode_data($data);
+            foreach ($data as $url => $item) {
+                if (preg_match('/\_\_.+\_\_/mu', $url)) {
+                    $currentFile = 'words.meta.db';
+                } else {
+                    $currentFile = 'words.' . crc32($url) % 100 . '.db';
+                }
+                $hashArray[$currentFile][$url] = $item;
+            }
+            foreach ($hashArray as $file => $array) {
+                $this->_write($directory . $file, $this->_code_data($array));
+            }
+        } else {
+            parent::_save_data($data, $filename = '');
         }
     }
 }

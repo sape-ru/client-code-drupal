@@ -83,6 +83,7 @@ class SAPE_articles extends SAPE_base
         if (!isset($this->_data['index']['announcements'][$this->_request_uri])) {
             $this->_correct_uri();
         }
+        $this->_split_data_file = false;
     }
 
     protected function _correct_uri()
@@ -476,11 +477,11 @@ class SAPE_articles extends SAPE_base
         switch ($this->_request_mode) {
             case 'index':
                 return '/?user=' . _SAPE_USER . '&host=' .
-                $this->_host . '&rtype=' . $this->_request_mode;
+                    $this->_host . '&rtype=' . $this->_request_mode;
                 break;
             case 'article':
                 return '/?user=' . _SAPE_USER . '&host=' .
-                $this->_host . '&rtype=' . $this->_request_mode . '&artid=' . $this->_article_id;
+                    $this->_host . '&rtype=' . $this->_request_mode . '&artid=' . $this->_article_id;
                 break;
             case 'image':
                 return $this->image_url;

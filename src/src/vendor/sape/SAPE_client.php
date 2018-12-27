@@ -175,7 +175,7 @@ class SAPE_client extends SAPE_base
      * - Примечание: начиная с версии 1.2.2 второй аргумент $offset убран. Если
      * передавать его согласно старой сигнатуре, то он будет проигнорирован.
      *
-     * @param int   $n       Количествово ссылок, которые нужно вывести в текущем блоке
+     * @param int   $n       Количество ссылок, которые нужно вывести в текущем блоке
      * @param array $options Опции
      *
      * <code>
@@ -431,7 +431,7 @@ class SAPE_client extends SAPE_base
      * - Примечание: начиная с версии 1.2.2 второй аргумент $offset убран. Если
      * передавать его согласно старой сигнатуре, то он будет проигнорирован.
      *
-     * @param int   $n       Количествово ссылок, которые нужно вывести
+     * @param int   $n       Количество ссылок, которые нужно вывести
      * @param array $options Опции
      *
      * <code>
@@ -450,7 +450,7 @@ class SAPE_client extends SAPE_base
 
         if ($this->_debug) {
             if (function_exists('debug_backtrace')) {
-                //$this->_return_links_calls[] = debug_backtrace();
+                $this->_return_links_calls[] = debug_backtrace();
             } else {
                 $this->_return_links_calls = "(function_exists('debug_backtrace')==false";
             }
@@ -519,7 +519,7 @@ class SAPE_client extends SAPE_base
     {
         if ($this->_debug) {
             if (function_exists('debug_backtrace')) {
-                //$this->_return_links_calls[] = debug_backtrace();
+                $this->_return_links_calls[] = debug_backtrace();
             } else {
                 $this->_return_links_calls = "(function_exists('debug_backtrace')==false";
             }
@@ -607,9 +607,18 @@ class SAPE_client extends SAPE_base
     protected function _get_db_file()
     {
         if ($this->_multi_site) {
-            return dirname(__FILE__) . '/' . $this->_host . '.links.db';
+            return dirname(__FILE__) . '/' . $this->_host . '.links' . $this->_get_save_filename_prefix() . '.db';
         } else {
-            return dirname(__FILE__) . '/links.db';
+            return dirname(__FILE__) . '/links' . $this->_get_save_filename_prefix() . '.db';
+        }
+    }
+
+    protected function _get_meta_file()
+    {
+        if ($this->_multi_site) {
+            return dirname(__FILE__) . '/' . $this->_host . '.links.meta.db';
+        } else {
+            return dirname(__FILE__) . '/links.meta.db';
         }
     }
 
@@ -699,6 +708,52 @@ class SAPE_client extends SAPE_base
             if (isset($this->_links[$var_name]) && strlen($this->_links[$var_name]) > 0) {
                 $this->$prop_name = $this->_links[$var_name];
             }
+        }
+    }
+
+    protected function _uncode_data($data)
+    {
+        if ($this->_format == 'php-require') {
+            $data1 = str_replace('<?php return ', '', $data);
+            eval('$data = ' . $data1 . ';');
+            return $data;
+        }
+
+        return @unserialize($data);
+    }
+
+    protected function _code_data($data)
+    {
+        if ($this->_format == 'php-require') {
+            return var_export($data, true);
+        }
+
+        return @serialize($data);
+    }
+
+    protected function _save_data($data, $filename = '')
+    {
+        if ($this->_split_data_file) {
+            if ($this->_multi_site) {
+                $directory = dirname(__FILE__) . '/' . $this->_host . '/';
+            } else {
+                $directory = dirname(__FILE__) . '/';
+            }
+            $hashArray = array();
+            $data = $this->_uncode_data($data);
+            foreach ($data as $url => $item) {
+                if (preg_match('/\_\_.+\_\_/mu', $url)) {
+                    $currentFile = 'links.meta.db';
+                } else {
+                    $currentFile = 'links.' . crc32($url) % 100 . '.db';
+                }
+                $hashArray[$currentFile][$url] = $item;
+            }
+            foreach ($hashArray as $file => $array) {
+                $this->_write($directory . $file, $this->_code_data($array));
+            }
+        } else {
+            parent::_save_data($data, $filename = '');
         }
     }
 }
