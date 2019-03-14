@@ -401,11 +401,7 @@ class SAPE_context extends SAPE_base
     protected function _save_data($data, $filename = '')
     {
         if ($this->_split_data_file) {
-            if ($this->_multi_site) {
-                $directory = dirname(__FILE__) . '/' . $this->_host . '/';
-            } else {
-                $directory = dirname(__FILE__) . '/';
-            }
+            $directory = dirname(__FILE__) . '/';
             $hashArray = array();
             $data = $this->_uncode_data($data);
             foreach ($data as $url => $item) {
@@ -413,6 +409,9 @@ class SAPE_context extends SAPE_base
                     $currentFile = 'words.meta.db';
                 } else {
                     $currentFile = 'words.' . crc32($url) % 100 . '.db';
+                }
+                if ($this->_multi_site) {
+                    $currentFile = $this->_host . '.' . $currentFile;
                 }
                 $hashArray[$currentFile][$url] = $item;
             }

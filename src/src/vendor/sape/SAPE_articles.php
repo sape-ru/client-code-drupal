@@ -511,4 +511,9 @@ class SAPE_articles extends SAPE_base
             $this->_page_obligatory_output = $data['__sape_page_obligatory_output__'];
         }
     }
+
+    protected function _get_meta_file()
+    {
+        return $this->_get_db_file();
+    }
 }

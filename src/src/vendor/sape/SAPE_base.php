@@ -38,7 +38,7 @@ class SAPE_base
         return self::$_tables[$class];
     }
 
-    protected $_version = '1.4.2';
+    protected $_version = '1.4.3';
 
     protected $_verbose = false;
 
